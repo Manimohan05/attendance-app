@@ -5,7 +5,7 @@ const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
-const PORT = 3000; // You can change the port number if needed
+const PORT = process.env.PORT || 3000;3000; // You can change the port number if needed
 
 // Database setup
 const db = new sqlite3.Database('./db.sqlite', (err) => {
@@ -138,5 +138,5 @@ app.get('/view-attendance', (req, res) => {
 
 // Starting the server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+    console.log(`Server is running on port ${PORT}`);
+  });
