@@ -33,7 +33,7 @@ A step-by-step series of examples that tell you how to get a development environ
 1. **Clone the repository**
 
     ```bash
-    git clone https://github.com/yourusername/attendance-program.git
+    git clone https://github.com/Manimohan05/attendance-app.git
     cd attendance-program
     ```
 
@@ -85,7 +85,7 @@ To deploy this project on Heroku, follow these steps:
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/Manimohan05/attendance-program/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/Manimohan05/attendance-app/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
