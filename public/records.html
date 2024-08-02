@@ -3,39 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
     <link rel="stylesheet" href="style.css">
+    <title>View Attendance Records</title>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm" action="/login" method="post">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
+    <h1 class="page-header">Attendance Records</h1> <!-- Header moved outside the records container -->
+    <div id="records" class="records-container">
+        <div id="recordList" class="record-list">
+            <!-- Attendance records will be dynamically inserted here -->
+        </div>
     </div>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            const formData = new FormData(this);
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message === 'Login successful') {
-                    window.location.href = '/index.html'; // Redirect to the attendance page
-                } else {
-                    alert('Login failed: ' + data.message);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
+    <!-- Logout button positioned at the bottom of the page -->
+    <button id="logoutButton" class="logout-button">Logout</button>
+    <script src="app.js"></script>
 </body>
 </html>

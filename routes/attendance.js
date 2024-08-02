@@ -1,33 +1,26 @@
-const express = require('express');
-const router = express.Router();
-const sqlite3 = require('sqlite3').verbose();
-
-let db = new sqlite3.Database('./db/database.db', (err) => {
-    if (err) console.error(err.message);
-});
-
-// Endpoint to mark attendance
-router.post('/mark-attendance', (req, res) => {
-    const { userId, status } = req.body;  // Assuming 'status' might be something like "Present"
-    const date = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
-    const sql = 'INSERT INTO attendance (user_id, date, status) VALUES (?, ?, ?)';
-    db.run(sql, [userId, date, status], function(err) {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
-        res.send('Attendance marked successfully');
+module.exports = (app, db) => {
+    app.post('/mark-attendance', (req, res) => {
+        const user_id = req.session.userId;
+        const date = new Date().toISOString().slice(0, 10);  // YYYY-MM-DD
+        const insert = `INSERT INTO attendance (user_id, date) VALUES (?, ?)`;
+        db.run(insert, [user_id, date], (err) => {
+            if (err) {
+                res.status(500).send({success: false, message: "Failed to mark attendance"});
+            } else {
+                res.send({success: true});
+            }
+        });
     });
-});
 
-// Endpoint to view attendance
-router.get('/view-attendance', (req, res) => {
-    const sql = 'SELECT * FROM attendance';
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
-        res.json(rows);
+    app.get('/view-attendance', (req, res) => {
+        const user_id = req.session.userId;
+        const query = `SELECT date FROM attendance WHERE user_id = ? ORDER BY date DESC`;
+        db.all(query, [user_id], (err, rows) => {
+            if (err) {
+                res.status(500).send({success: false, message: "Failed to retrieve records"});
+            } else {
+                res.send(rows);
+            }
+        });
     });
-});
-
-module.exports = router;
+};

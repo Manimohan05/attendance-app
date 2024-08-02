@@ -1,37 +1,29 @@
-const express = require('express');
-const router = express.Router();
-const sqlite3 = require('sqlite3').verbose();
-
-let db = new sqlite3.Database('./db/database.db', (err) => {
-    if (err) console.error(err.message);
-});
-
-// Registration Endpoint
-router.post('/register', (req, res) => {
-    const { username, password } = req.body;
-    const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
-    db.run(sql, [username, password], function(err) {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
-        res.send(`User registered successfully with ID ${this.lastID}`);
+module.exports = (app, db) => {
+    app.post('/login', (req, res) => {
+        const { username, password } = req.body;
+        const query = `SELECT * FROM users WHERE username = ?`;
+        db.get(query, [username], (err, user) => {
+            if (err) {
+                res.status(500).send({success: false, message: "An error occurred."});
+            } else if (user && bcrypt.compareSync(password, user.password)) {
+                req.session.userId = user.id;  // set user session
+                res.send({success: true});
+            } else {
+                res.status(401).send({success: false, message: "Username or password incorrect"});
+            }
+        });
     });
-});
 
-// Login Endpoint
-router.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    db.get(sql, [username, password], (err, user) => {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
-        if (user) {
-            res.send('Login successful');
-        } else {
-            res.status(404).send('User not found');
-        }
+    app.post('/register', (req, res) => {
+        const { username, password } = req.body;
+        const hashedPassword = bcrypt.hashSync(password, 10);  // hash the password
+        const insert = `INSERT INTO users (username, password) VALUES (?, ?)`;
+        db.run(insert, [username, hashedPassword], (err) => {
+            if (err) {
+                res.status(500).send({success: false, message: "Username already exists"});
+            } else {
+                res.send({success: true});
+            }
+        });
     });
-});
-
-module.exports = router;
+};
