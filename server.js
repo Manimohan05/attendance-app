@@ -5,7 +5,7 @@ const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
-const PORT = process.env.PORT || 3000;3000; // You can change the port number if needed
+const PORT = process.env.PORT || 3000;; // You can change the port number if needed
 
 // Database setup
 const db = new sqlite3.Database('./db.sqlite', (err) => {
